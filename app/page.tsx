@@ -1,5 +1,5 @@
-import ExploredBtn from "@components/ExploredBtn";
-import EventList from "@components/EventList";
+import ExploredBtn from "@/components/ExploredBtn";
+import EventList from "@/components/EventList";
 
 const Page = () => {
     return (
