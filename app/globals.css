@@ -127,9 +127,6 @@
         @apply font-schibsted-grotesk text-2xl font-bold;
     }
 
-    ul {
-        @apply list-disc list-inside;
-    }
 }
 
 @layer components {
