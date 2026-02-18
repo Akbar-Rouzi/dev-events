@@ -1,0 +1,100 @@
+import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongodb";
+import Event, { IEvent } from '@/database/event.model';
+
+// Define route params type for type safety
+type RouteParams = {
+  params: Promise<{
+    slug: string
+  }>;
+};
+
+/**
+ * GET /api/events/[slug]
+ * Fetches a single event by its slug
+ * @param request - The incoming request object
+ * @param params - Route parameters containing the slug
+ * @returns JSON response with event data or error message
+ */
+export async function GET(
+  request: NextRequest,
+  { params }: RouteParams
+): Promise<NextResponse> {
+  try {
+    // Connect to database
+    await connectDB();
+
+    //Await the slug from params
+    const { slug } = await params;
+
+    // Validate slug parameter
+
+    if (!slug || typeof slug !== 'string' || slug.trim() === '') {
+      return NextResponse.json(
+        { message: 'Invalid or missing slug parameter' },
+        { status: 400 }
+      );
+    }
+
+    // Sanitize slug ( Trim whitespace and validate slug format)
+
+    const sanitizedSlug = slug.trim().toLowerCase();
+    if (!sanitizedSlug) {
+      return NextResponse.json(
+        { message: 'Slug parameter cannot be empty' },
+        { status: 400 }
+      );
+    }
+
+
+    // Query for event by slug
+    const event = await Event.findOne({ slug: sanitizedSlug }).lean();
+
+    // Check if event exists
+    if (!event) {
+      return NextResponse.json(
+        { message: `Event with slug '${sanitizedSlug}' not found` },
+        { status: 404 }
+      );
+    }
+
+    // Return successful response with event data
+    return NextResponse.json(
+      {
+        message: 'Event fetched successfully',
+        event
+      },
+      { status: 200 }
+    );
+
+  } catch (error) {
+    // Log error for debugging (in production, use proper logging)
+    // Log error for debugging (only in development)
+    if (process.env.NODE_ENV === 'development') {
+      console.error('Error fetching event by slug:', error);
+    }
+    // Handle database connection errors
+    if (error instanceof Error) {
+      // Check for specific MongoDB errors if needed
+
+      if (error.message.includes('MONGODB_URI')) {
+        return NextResponse.json(
+          { message: 'Database configuration error' },
+          { status: 500 }
+        );
+      }
+
+      // Return generic error with error message
+      return NextResponse.json(
+        { message: 'Failed to fetch event', error: error.message },
+        { status: 500 }
+      );
+    }
+
+    // Handle unexpected errors
+    return NextResponse.json(
+      { message: 'An unexpected error occurred while fetching the event' },
+      { status: 500 }
+    );
+  }
+}
