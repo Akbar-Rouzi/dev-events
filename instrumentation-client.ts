@@ -1,9 +1,23 @@
-import posthog from "posthog-js"
+// instrumentation-client.ts
+import posthog from "posthog-js";
 
-posthog.init(process.env.NEXT_PUBLIC_POSTHOG_KEY!, {
-  api_host: "/ingest",
-  ui_host: "https://us.posthog.com",
-  defaults: '2025-05-24',
-  capture_exceptions: true, // This enables capturing exceptions using Error Tracking, set to false if you don't want this
-  debug: process.env.NODE_ENV === "development",
-});
+export function initPosthog() {
+  if (typeof window === "undefined") return;            // don't run on server
+  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST ?? "/ingest";
+
+  if (!key) {
+    console.warn("PostHog key missing");
+    return;
+  }
+
+  const isDev = process.env.NODE_ENV === "development";
+  const debugFlag = isDev && process.env.NEXT_PUBLIC_POSTHOG_DEBUG !== "false";
+
+  posthog.init(key, {
+    api_host: host,
+    ui_host: "https://us.posthog.com",
+    capture_exceptions: true,
+    debug: debugFlag,
+  });
+}
