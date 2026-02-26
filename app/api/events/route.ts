@@ -52,13 +52,13 @@ export async function POST(req: NextRequest) {
 		const createdEvent = await Event.create(eventPayload);
 
 		return NextResponse.json(
-			{ message: 'Event created successfully', evnet: createdEvent },
+			{ message: 'Event created successfully', event: createdEvent },
 			{ status: 201 });
 	} catch (e) {
-		console.log(e);
+		console.error('Event creation failed:', e);
 		return NextResponse.json(
-            { message: 'Event Creation Failed', error: e instanceof Error ? e.message : 'Unknown' }, 
-            { status: 500 })
+			{ message: 'Event Creation Failed', error: 'Unknown' },
+			{ status: 500 })
 	}
 }
 
@@ -68,7 +68,12 @@ export async function GET() {
 		const events = await Event.find().sort({ createdAt: -1 });
 		return NextResponse.json({ message: 'Events fetched successfully', events }, { status: 200 });
 	} catch (e) {
-		return NextResponse.json({ message: 'Event fetching failed', error: e }, { status: 500 });
+		console.error('Event fetching failed:', e);
+		return NextResponse.json({
+			message: 'Event fetching failed',
+			...(process.env.NODE_ENV === "development" && {
+				error: (e as Error).message,
+			}),
+		}, { status: 500 });
 	}
 }
-// a route that accepts a slug as input --> returns the event details

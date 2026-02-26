@@ -7,7 +7,7 @@ type EventDetailsItemProps = {
 }
 
 const EventDetailsItem = ({icon, alt, label} : EventDetailsItemProps) => (
-    <div className="flex-row-gap-2 items-center">
+    <div className="flex items-center gap-2">
         <Image src={icon} alt={alt} width={17} height={17} />
         <p>{label}</p>
     </div>
