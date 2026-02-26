@@ -17,4 +17,11 @@ export function parseArrayField(value: FormDataEntryValue | null): string[] {
   return trimmed.split(",").map(s => s.trim()).filter(Boolean);
 }
 
-export const parseJsonFromArray = (arr: string[]) => JSON.parse(arr[0].trim().replace(/,+$/, ""));
+export function parseJsonFromArray<T>(arr: string[]): T | null {
+  if (!arr.length || !arr[0]) return null;
+  try {
+    return JSON.parse(arr[0].trim().replace(/,+$/, ""));
+  } catch {
+    return null;
+  }
+}
