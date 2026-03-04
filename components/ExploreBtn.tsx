@@ -1,6 +1,6 @@
 'use client';
 import Image from 'next/image';
-const ExploredBtn = () => {
+const ExploreBtn = () => {
     return (
         <button type="button" id="explore-btn" className="mt-7 mx-auto" onClick={() => console.log('Click')
         }>
@@ -10,4 +10,4 @@ const ExploredBtn = () => {
         </button>
     )
 }
-export default ExploredBtn
+export default ExploreBtn
