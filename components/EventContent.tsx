@@ -2,7 +2,6 @@ import Image from "next/image";
 import EventDetailsItem from "@/components/EventDetailsItem";
 import EventAgenda from "@/components/EventAgenda";
 import EventTags from "@/components/EventTags";
-import { parseJsonFromArray } from "@/lib/helpers";
 import { IEvent } from "@/database/event.model";
 
 type Props = {
@@ -28,12 +27,12 @@ const EventContent = ({event}: Props) => {
                 <EventDetailsItem icon="/icons/audience.svg" alt="audience" label={audience} />
             </section>
 
-            <EventAgenda agendaItems={parseJsonFromArray<string[]>(agenda) ?? []} />
+            <EventAgenda agendaItems={agenda ?? []} />
             <section className="flex-col-gap-2">
                 <h2>About the Organizer</h2>
                 <p>{organizer}</p>
             </section>
-            <EventTags tags={parseJsonFromArray<string[]>(tags) ?? []} />
+            <EventTags tags={tags ?? []} />
         </div>
     )
 }

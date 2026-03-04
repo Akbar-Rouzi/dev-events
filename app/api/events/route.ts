@@ -3,7 +3,6 @@ import { v2 as cloudinary } from 'cloudinary';
 
 import connectDB from "@/lib/mongodb";
 import Event from '@/database/event.model';
-import { parseArrayField } from "@/lib/helpers";
 
 type CloudinaryUploadResult = {
 	secure_url: string;
@@ -16,18 +15,22 @@ export async function POST(req: NextRequest) {
 
 		const formData = await req.formData();
 
-		// Plain key/value object from the submitted FormData (values are string | File)
-		const eventInput: Record<string, FormDataEntryValue> = Object.fromEntries(
-			formData.entries()
-		);
 		// Validate & read image
 		const imageValue = formData.get("image");
 		if (!(imageValue instanceof File)) {
 			return NextResponse.json({ message: "Image file is required" }, { status: 400 });
 		}
 
+		// Make string-only fields (exclude image, we handle it separately, because it's a File, and databases cannot store files directly, 
+		// only their URLs, and we will get the URL after uploading to Cloudinary)
+		const eventFields: Record<string, string> = {};
+		for (const [k, v] of formData.entries()) {
+			if (k === "image") continue; // If it's the image field, skip it for now
+			if (typeof v === "string") eventFields[k] = v;
+		}
 
-		// Upload image to Cloudinary
+
+		// Upload image to Cloudinary to get a URL we can store in the database
 		const arrayBuffer = await imageValue.arrayBuffer();
 		const buffer = Buffer.from(arrayBuffer);
 
@@ -43,10 +46,10 @@ export async function POST(req: NextRequest) {
 
 		// Build final payload with correct types
 		const eventPayload = {
-			...eventInput,
+			...eventFields,
 			image: uploadResult.secure_url,
-			tags: parseArrayField(formData.get("tags")),
-			agenda: parseArrayField(formData.get("agenda")),
+			tags: JSON.parse(formData.get("tags") as string),
+			agenda: JSON.parse(formData.get("agenda") as string),
 		};
 
 		const createdEvent = await Event.create(eventPayload);
@@ -58,7 +61,8 @@ export async function POST(req: NextRequest) {
 		console.error('Event creation failed:', e);
 		return NextResponse.json(
 			{ message: 'Event Creation Failed', error: 'Unknown' },
-			{ status: 500 })
+			{ status: 500 }
+		)
 	}
 }
 
