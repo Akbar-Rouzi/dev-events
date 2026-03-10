@@ -5,10 +5,14 @@ import BookForm from "@/components/BookForm";
 import { IEvent } from "@/database/event.model";
 import { getSimilarEventsBySlug } from '@/lib/actions/event.actions';
 import EventCard from "@/components/EventCard";
+import {BookingProvider} from "@/lib/context/booking-context";
+import { cacheLife } from "next/cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
 
 const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
+    'use cache';
+    cacheLife('hours');
     const { slug } = await params;// unwrap the Promise
     if (!BASE_URL) {
         throw new Error("NEXT_PUBLIC_BASE_URL environment variable is not set");
@@ -21,6 +25,9 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
     const { event } = (await res.json()) as { event: IEvent };
 
     if (!event || !event.description || !event.image) return notFound();
+
+    const eventId = typeof event._id === "string" ? event._id : event._id?.toString?.();
+    if (!eventId) return notFound();
 
     const similarEvents: IEvent[] = await getSimilarEventsBySlug({ slug });
     return (
@@ -35,7 +42,9 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
                 {/* left side - Event Content */}
                 <EventContent event={event} />
                 {/* Right-side --Booking Form */}
-                <BookForm />
+                <BookingProvider value={{eventId, slug: event.slug}}>
+                    <BookForm />
+                </BookingProvider>
             </div>
             {/* Similar Events */}
             <div className="flex w-full flex-col gap-4 pt-20">
