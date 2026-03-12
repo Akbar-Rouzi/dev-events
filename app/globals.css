@@ -111,6 +111,16 @@
         @apply border-border outline-ring/50;
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        html {
+            scroll-behavior: auto;
+        }
+    }
+
     body {
         @apply bg-background text-foreground;
     }
@@ -130,18 +140,9 @@
 }
 
 @layer components {
-    #home {
-        .subheading {
-            @apply text-light-100 text-lg max-sm:text-sm text-center mt-5;
-        }
-    }
 
-    #explore-btn {
-        @apply border-dark-200 bg-dark-100 flex w-fit cursor-pointer  rounded-full border px-8 py-3.5 max-sm:w-full text-center;
-
-        a {
-            @apply flex-center gap-2 text-center w-full;
-        }
+    .explore-btn {
+        @apply border-dark-200 bg-dark-100 flex-center w-fit cursor-pointer gap-2 rounded-full border px-8 py-3.5 text-center max-sm:w-full;
     }
 
     header {
@@ -164,8 +165,36 @@
         }
     }
 
+    .nav-link {
+        @apply text-sm sm:text-base text-light-100 transition-colors hover:text-primary;
+    }
+
+    .nav-link-active {
+        @apply text-primary;
+    }
+
+    .nav-cta {
+        @apply rounded-md bg-primary px-3 py-1.5 text-sm font-semibold text-black hover:bg-primary/90;
+    }
+
+    .nav-menu-btn {
+        @apply sm:hidden rounded-md border border-dark-200 px-3 py-1.5 text-sm;
+    }
+
+    .nav-menu {
+        @apply absolute right-0 top-14 w-44 flex-col gap-3 rounded-md border border-dark-200 bg-dark-100 p-4 sm:static sm:w-auto sm:flex sm:flex-row sm:items-center sm:gap-6 sm:border-0 sm:bg-transparent sm:p-0;
+    }
+
+    .nav-menu-open {
+        @apply flex;
+    }
+
+    .nav-menu-closed {
+        @apply hidden sm:flex;
+    }
+
     .events {
-        @apply grid md:grid-cols-3 gap-10 sm:grid-cols-2 grid-cols-1;
+        @apply grid md:grid-cols-3 gap-x-10 gap-y-14 sm:grid-cols-2 grid-cols-1;
     }
 
     #event-card {
@@ -193,6 +222,8 @@
     }
 
     #event {
+        @apply pt-16;
+
         .header {
             @apply flex w-2/3 flex-col items-start gap-4 max-lg:w-full mb-10;
         }
