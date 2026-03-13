@@ -1,16 +1,12 @@
 import Link from "next/link";
 import Image from "next/image";
+import { EventFields } from "@/database";
 
-interface Props {
-    title: string;
-    image: string;
-    slug: string;
-    location: string;
-    date: string;
-    time: string;
-}
+type PropsType = Pick<
+    EventFields,
+    'title' | 'image' | 'slug' | 'location' | 'date' | 'time'>;
 
-const EventCard = ({title, image, slug, location, date, time}: Props) => {
+const EventCard = ({title, image, slug, location, date, time}: PropsType) => {
     return (
         <Link href={`/events/${slug}`} id="event-card">
             <Image src={image} alt={title} width={410} height={300} className="poster"/>

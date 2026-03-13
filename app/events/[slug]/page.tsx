@@ -2,13 +2,16 @@ import { notFound } from "next/navigation";
 
 import EventContent from "@/components/EventContent";
 import BookForm from "@/components/BookForm";
-import { IEvent } from "@/database/event.model";
+import { EventFields } from "@/database";
 import { getSimilarEventsBySlug } from '@/lib/actions/event.actions';
 import EventCard from "@/components/EventCard";
 import {BookingProvider} from "@/lib/context/booking-context";
 import { cacheLife } from "next/cache";
 
 const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+type EventDetails = EventFields & {
+  _id: string;
+};
 
 const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> }) => {
     'use cache';
@@ -22,14 +25,14 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
     if (!res.ok) {
         return notFound();
     }
-    const { event } = (await res.json()) as { event: IEvent };
+    const { event } = (await res.json()) as { event: EventDetails };
 
     if (!event || !event.description || !event.image) return notFound();
 
-    const eventId = typeof event._id === "string" ? event._id : event._id?.toString?.();
+   const eventId = event._id;
     if (!eventId) return notFound();
 
-    const similarEvents: IEvent[] = await getSimilarEventsBySlug({ slug });
+    const similarEvents: EventFields[] = await getSimilarEventsBySlug({ slug });
     return (
         <section id="event">
             {/* Event Header */}
@@ -50,7 +53,7 @@ const EventDetailsPage = async ({ params }: { params: Promise<{ slug: string }> 
             <div className="flex w-full flex-col gap-4 pt-20">
                 <h2>Similar Events</h2>
                 <div className="events">
-                    {similarEvents.length > 0 && similarEvents.map((similarEvents: IEvent) => (
+                    {similarEvents.length > 0 && similarEvents.map((similarEvents: EventFields) => (
                         <EventCard key={similarEvents.title} {...similarEvents} />
                     ))}
                 </div>

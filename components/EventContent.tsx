@@ -2,10 +2,10 @@ import Image from "next/image";
 import EventDetailsItem from "@/components/EventDetailsItem";
 import EventAgenda from "@/components/EventAgenda";
 import EventTags from "@/components/EventTags";
-import { IEvent } from "@/database/event.model";
+import { EventFields } from "@/database";
 
 type Props = {
-    event:IEvent;
+    event:EventFields;
 }
 
 const EventContent = ({event}: Props) => {
