@@ -275,6 +275,86 @@
         }
     }
 
+    #create-event {
+        @apply pt-2 sm:pt-4 scroll-mt-24;
+
+        h1 {
+            @apply text-center mt-0 mb-6 text-3xl sm:text-5xl md:text-6xl;
+        }
+
+        .create-event-card {
+            @apply bg-dark-100 border-dark-200 card-shadow mx-auto w-full max-w-4xl rounded-[10px] border px-5 py-6 sm:px-8;
+        }
+    }
+
+    #create-event-form {
+        @apply flex flex-col gap-6;
+
+        .form-field {
+            @apply flex flex-col gap-2;
+        }
+
+        .form-row {
+            @apply grid grid-cols-1 gap-4 md:grid-cols-2;
+        }
+
+        label {
+            @apply text-light-100 text-sm font-medium;
+        }
+
+        .required-field {
+            display: inline-flex;
+            align-items: center;
+            line-height: 1.2;
+        }
+
+        .required-field::after {
+            content: '*';
+            color: #ffa270;
+            font-weight: 700;
+            margin-left: 4px;
+            line-height: 1;
+            transform: translateY(2.5px);
+        }
+
+        input,
+        textarea,
+        select {
+            @apply bg-dark-200 rounded-[6px] px-5 py-2.5 text-light-100 outline-none ring-0;
+        }
+
+        textarea {
+            @apply min-h-28 resize-y;
+        }
+
+        .button-submit {
+            @apply bg-primary hover:bg-primary/90 w-full cursor-pointer items-center justify-center rounded-[6px] px-4 py-2.5 text-lg font-semibold text-black;
+        }
+
+        .button-submit:disabled {
+            @apply cursor-not-allowed opacity-60;
+        }
+
+        .field-error {
+            @apply text-sm text-red-400 mt-1;
+        }
+
+        input[type='date'],
+        input[type='time'] {
+            color-scheme: light;
+            -webkit-appearance: none;
+            appearance: none;
+        }
+
+        input[type='date']::-webkit-calendar-picker-indicator,
+        input[type='time']::-webkit-calendar-picker-indicator {
+            filter: invert(1) brightness(2.4) contrast(1.2);
+            opacity: 1;
+            cursor: pointer;
+        }
+
+    }
+
     .pill {
         @apply bg-dark-100 text-light-100 text-xs rounded-[6px] px-5 py-2;
     }

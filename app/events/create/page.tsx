@@ -1,7 +1,10 @@
+import CreateEventForm from "@/components/createEvent/CreateEventForm"
+
 const CreateEventPage = () => {
     return (
-        <section>
-            <h1>Create Event Page</h1>
+        <section id="create-event">
+            <h1>Create Event</h1>
+            <CreateEventForm />
         </section>
     )
 }

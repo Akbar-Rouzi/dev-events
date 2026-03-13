@@ -1,7 +1,6 @@
 import { Schema, model, models, Document } from 'mongoose';
-
-// TypeScript interface for Event document
-export interface IEvent extends Document {
+// Base event data type without MongoDB document properties and it is is the blueprint of the event data
+export interface EventFields {
   title: string;
   slug: string;
   description: string;
@@ -11,11 +10,17 @@ export interface IEvent extends Document {
   location: string;
   date: string;
   time: string;
-  mode: string;
+  mode: 'online' | 'offline' | 'hybrid';
   audience: string;
   agenda: string[];
   organizer: string;
-  tags: string[];
+  tags: string[];  
+}
+
+// IEvent full Mongoose event document type and it is the real database document object created from that blueprint(EventFields)
+//  with additional properties like _id, createdAt, updatedAt, etc.
+
+interface IEvent extends EventFields, Document {
   createdAt: Date;
   updatedAt: Date;
 }
